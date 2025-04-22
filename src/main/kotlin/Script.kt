@@ -4,21 +4,11 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class Script(
-    processBuilder: ProcessBuilder,
+    vararg command: String,
     whenDone: (Int, String) -> Unit
 ) {
-    companion object {
-        fun exec(
-            vararg command: String,
-            whenDone: (Int, String) -> Unit = { _, _ -> }
-        ): Script {
-            return Script(
-                ProcessBuilder(command.toList()),
-                whenDone
-            )
-        }
-    }
     init {
+        val processBuilder = ProcessBuilder(command.toList())
         val process = processBuilder.start()
         val reader = BufferedReader(InputStreamReader(process.inputStream))
         val output = StringBuilder()

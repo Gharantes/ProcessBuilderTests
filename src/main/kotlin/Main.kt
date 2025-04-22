@@ -2,8 +2,6 @@ package org.example
 
 import java.io.IOException
 import kotlin.io.path.createTempDirectory
-import kotlin.io.path.createTempFile
-import kotlin.io.path.name
 
 fun main() {
     val filename = "test.rar"
@@ -27,7 +25,7 @@ fun main() {
 fun getRARVersion(filename: String): Int? {
     val regex = Regex("""RAR archive data,\s*v(\d+)""")
     var version: Int? = null
-    Script.exec("file", "./$filename") { _, o ->
+    Script("file", "./$filename") { _, o ->
         version = regex
             .find(o)
             ?.groupValues
@@ -39,7 +37,7 @@ fun getRARVersion(filename: String): Int? {
 fun extractV5RAR(filename: String) {
     val destination = "paths"
     val dirf = createTempDirectory(destination).toFile()
-    Script.exec("unrar", "x", "-v", "./$filename", "$dirf") { ec, o ->
+    Script("unrar", "x", "-v", "./$filename", "$dirf") { ec, o ->
         println(o)
     }
 }
