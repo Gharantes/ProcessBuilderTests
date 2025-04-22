@@ -5,12 +5,12 @@ import java.io.InputStreamReader
 
 class Script(
     processBuilder: ProcessBuilder,
-    whenDone: (Int) -> Unit
+    whenDone: (Int, String) -> Unit
 ) {
     companion object {
         fun exec(
             vararg command: String,
-            whenDone: (Int) -> Unit = {}
+            whenDone: (Int, String) -> Unit = { _, _ -> }
         ): Script {
             return Script(
                 ProcessBuilder(command.toList()),
@@ -21,11 +21,12 @@ class Script(
     init {
         val process = processBuilder.start()
         val reader = BufferedReader(InputStreamReader(process.inputStream))
+        val output = StringBuilder()
         var line: String?
         while (reader.readLine().also { line = it } != null) {
-            println(line)
+            output.appendLine(line)
         }
         val exitCode = process.waitFor()
-        whenDone(exitCode)
+        whenDone(exitCode, output.toString())
     }
 }
